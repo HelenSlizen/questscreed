@@ -1,0 +1,118 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Администрирование</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="container">
+			<div class="moderation_main">
+				<form method="POST">
+					{% csrf_token %}
+					<table class="moderation_main-table">
+						<tr>
+							<th>Команда</th>
+						{% if user.username == "admin" or user.username == "admin_b" %}
+							<th>Шарик</th>
+						{% endif %}
+						{% if user.username == "admin" or user.username == "admin_t" %}
+							<th>Свиток</th>
+						{% endif %}
+						{% if user.username == "admin" or user.username == "admin_m" %}
+							<th>Маска</th>
+						{% endif %}
+						{% if user.username == "admin" or user.username == "admin_s" %}
+							<th>Свиток в шарике</th>
+						{% endif %}
+						{% if user.username == "admin" or user.username == "admin_p" %}
+							<th>Фотография</th>
+						{% endif %}
+						</tr>
+						{% for universary in universarys %}
+								<tr>
+									<td id="user_{{forloop.counter}}" name="user_{{forloop.counter}}"> {{ universary.universary_login }} </td>
+									{% if user.username == "admin" or user.username == "admin_b" %}
+										{% if universary.balloon == False %}
+											<td><input id="checkBox1_{{forloop.counter}}" name="checkBox1_{{forloop.counter}}" value="1" type="checkbox"></td>
+										{% else %}
+										<td class="complete"></td>
+										{% endif %}
+									{% endif %}
+									{% if user.username == "admin" or user.username == "admin_t" %}
+										{% if universary.text == False %}
+											<td><input id="checkBox2_{{forloop.counter}}" name="checkBox2_{{forloop.counter}}" value="1" type="checkbox"></td>
+										{% else %}
+											<td class="complete"></td>
+										{% endif %}
+									{% endif %}
+									{% if user.username == "admin" or user.username == "admin_m" %}
+										{% if universary.mask == False %}
+											<td><input id="checkBox3_{{forloop.counter}}" name="checkBox3_{{forloop.counter}}" value="1" type="checkbox"></td>
+										{% else %}
+											<td class="complete"></td>
+										{% endif %}
+									{% endif %}
+									{% if user.username == "admin" or user.username == "admin_s" %}
+										{% if universary.send == False %}
+											<td><input id="checkBox4_{{forloop.counter}}" name="checkBox4_{{forloop.counter}}" value="1" type="checkbox"></td>
+										{% else %}
+											<td class="complete"></td>
+										{% endif %}
+									{% endif %}
+									{% if user.username == "admin" or user.username == "admin_p" %}
+										{% if universary.photo == False %}
+											<td><input id="checkBox5_{{forloop.counter}}" name="checkBox5_{{forloop.counter}}" value="1" type="checkbox"></td>
+										{% else %}
+											<td class="complete"></td>
+										{% endif %}
+									{% endif %}
+								</tr>
+						{% endfor %}
+					</table>
+					<div class="moderation_main-table_button">
+						<button type="sybmit">Подтвердить</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

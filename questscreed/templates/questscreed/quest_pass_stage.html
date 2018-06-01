@@ -1,0 +1,121 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Пройти квест</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			<div class="quest_pass-index">
+				{% if stage.stage_number == stage_pk %}
+				<h2 class="quest_pass-index_title">Этап <span id="quest_pass-index_count">{{ stage.stage_number }}</span>. {{ stage.stage_title }}</h2>
+				<script>
+						function show(id) {
+
+						    var ul = document.getElementById(id)
+
+						    if (ul.style.display == 'none') 
+						        ul.style.display = 'block'
+						    else 
+						        ul.style.display = 'block'
+						}
+				</script>
+				<form method="POST" class="quest_pass-stage_form">
+					<span>{{stage.stage_question}}</span>
+					{% if not quest.pk == 4 %}
+						<img class="quest_pass-stage_image"  src="http://127.0.0.1:8000/static/images/{{ quest.quest_title }}/{{ stage.stage_number }}.jpg" alt="Картинка">
+					{% endif %}
+					{% if stage.question_type == "QWP" or stage.question_type == "QWA" %}
+						{% csrf_token %}
+			        	{{ form.as_p }}
+			        {% endif %}
+
+			        {% if stage.question_type == "QWC" %}
+			        	{% csrf_token %}
+				        <div class="question_radio">
+				        	<input type="radio" name="quest_radio" id="question_radio1" value="{{stage.answer_choice_1}}"> <label for="question_radio1">{{stage.answer_choice_1}}</label>
+				        </div>
+				        <div class="question_radio">
+				        	<input type="radio" name="quest_radio" id="question_radio2" value="{{stage.answer_choice_2}}"> <label for="question_radio2">{{stage.answer_choice_2}}</label>
+				        </div>
+				        <div class="question_radio">
+				        	<input type="radio" name="quest_radio" id="question_radio3" value="{{stage.answer_choice_3}}"> <label for="question_radio3">{{stage.answer_choice_3}}</label>
+				        </div>
+				        <div class="question_radio">
+				        	<input type="radio" name="quest_radio" id="question_radio4" value="{{stage.answer_choice_4}}"> <label for="question_radio4">{{stage.answer_choice_4}}</label>
+				        </div>
+			        {% endif %}
+
+			        {% if stage.question_type == "QWE" %}
+			        	{% csrf_token %}
+			        	<div class="qwe_form">
+			        		<div class="variants">
+			        			<div>
+			        				<input class="qwe_input" type="text" name="question_equivalent_1" id="question_equivalent_3"> <label for="question_equivalent_3">{{stage.answer_variant_3}}</label>
+			        			</div>
+			        			<div>
+			        				<input class="qwe_input" type="text" name="question_equivalent_2" id="question_equivalent_4"> <label for="question_equivalent_4">{{stage.answer_variant_4}}</label>
+			        			</div>
+			        			<div>
+			        				<input class="qwe_input" type="text" name="question_equivalent_3" id="question_equivalent_1"> <label for="question_equivalent_1">{{stage.answer_variant_1}}</label>
+			        			</div>
+			        			<div>
+			        				<input class="qwe_input" type="text" name="question_equivalent_4" id="question_equivalent_2"> <label for="question_equivalent_2">{{stage.answer_variant_2}}</label>	
+			        			</div>
+			        		</div>
+			        		<div class="choices">
+			        			<span>1. {{stage.answer_choice_1}}</span>
+								<span>2. {{stage.answer_choice_2}}</span>
+								<span>3. {{stage.answer_choice_3}}</span>
+								<span>4. {{stage.answer_choice_4}}</span>
+			        		</div>
+			        	</div>
+			        {% endif %}
+			        <div id="stage_hint-text">Подсказка: {{stage.hint}}</div>
+					<button type="submit" class="quest_pass-stage_button">Ответить</button>
+					<span>Затрудняетесь ответить? <b id="quest_pass-stage_hint" onclick="show('stage_hint-text')" class="quest_pass-stage_hint">Возьмите подсказку!</b></span>
+				</form>
+				{% endif %}
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

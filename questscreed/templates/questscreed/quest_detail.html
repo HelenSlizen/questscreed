@@ -1,0 +1,145 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ quest.quest_title }}</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+						<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					{% else %}
+						<a href="{% url 'quest_detail' pk=4 %}"><strong>Quest's creed</strong></a>
+					{% endif %}
+					<span>Городские квесты</span>
+				</div>
+				{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+					<nav class="menu">
+						<ul>
+							<li><a href="{% url 'quests' %}">Квесты</a></li>
+							<li><a href="{% url 'news' %}">Новости</a></li>
+							<li><a href="{% url 'rules' %}">Правила</a></li>
+						</ul>
+					</nav>
+				{% endif %}
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="quest_detail-main">
+		<div class="container">
+			<div class="quest_detail-cover-{{quest.pk}}">
+				{% if user.is_authenticated and user.username == "admin" %}
+					<a title="Редактировать квест" class="quest_edit-symbol_link" href="{% url 'quest_edit' pk=quest.pk %}"><i class="fa fa-pencil quest_edit-symbol" aria-hidden="true"></i></a>
+					<a title="Редактировать этапы квеста" class="quest_stage-symbol_link" href="{% url 'stage_list' pk=quest.pk %}"><i class="fa fa-bars quest_stage-symbol" aria-hidden="true"></i></a>
+				{% endif %}
+				{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+					<span class="quest_detail-statistic_votes"><i class="fa fa-heart votes_symbol"></i>{{quest.votes}}</span>
+				{% endif %}
+				<div class="quest_detail-statistic_cover"><h2 class="quest_detail-statistic_title">{{ quest.quest_title }}</h2></div>
+				{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+					<span class="quest_detail-statistic">Команда: {{ quest.min_players }} - {{ quest.max_players }} человек</span>
+					<span class="quest_detail-statistic">Сложность: {{ quest.complexity }}</span>
+					<span class="quest_detail-statistic">{{ quest.quest_type }}</span>
+				{% endif %}
+			</div>
+			{% if user.is_authenticated and user.username == "admin" %}
+				<a class="delete_item" href="{% url 'delete_quest' pk=quest.pk %}">Удалить квест</a>
+				<a class="quest_detail-statistics" href="{% url 'moderation' %}">Посмотреть статистику квеста</a>
+			{% endif %}
+			<div class="quest_detail-description">
+				{{ quest.quest_description }}
+			</div>
+			<div class="quest_detail-link">
+			{% if quest.quest_title == "Юбилей кафедры ИТГС" %}
+				<a href="{% url 'universary' %}" class="quest_detail-enroll">Пройти квест</a>
+			{% else %}
+				<a href="{% url 'quest_pass_index' pk=quest.pk %}" class="quest_detail-enroll">Пройти квест</a>
+			{% endif %}
+			{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+				<a href="{% url 'add_comment_to_quest' pk=quest.pk %}" class="quest_detail-review">Оставить отзыв</a>
+				<a href="{% url 'quest_vote' pk=quest.pk %}" class="quest_detail-vote">Мне понравилось</a>
+			{% endif %}
+			</div>
+			
+			{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+				<div class="news_item-border"></div>
+
+				<h2 class="quest_detail-comment_title">Отзывы:</h2>
+				{% for comment in quest.comments.all %}
+				{% empty %}
+					<span class="quest_detail-description quest_detail-empty">
+						К этому квесту еще не оставляли комментариев...
+					</span>
+				{% endfor %}
+
+				{% for comment in quest.comments.all %}
+					{% if comment.approved_comment or user.username == "admin" %}
+						<div class="quest_detail-comment">
+							<h3 class="quest_detail-comment_author">{{ comment.comment_author }}</h3>
+							{% if not comment.approved_comment %}
+	            				<a class="quest_detail-comment_symbol" title="Удалить комментарий" href="{% url 'comment_remove' pk=comment.pk %}"><i class="fa fa-times" aria-hidden="true"></i></a>
+	            				<a class="quest_detail-comment_symbol" title="Одобрить комментарий" href="{% url 'comment_approve' pk=comment.pk %}"><i class="fa fa-check" aria-hidden="true"></i></a>
+	            			{% endif %}
+							<p class="quest_detail-comment_text">{{ comment.comment_text }}</p>
+							<p class="quest_detail-comment_data">{{ comment.comment_created_date }}</p>
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		</div>
+	</main>
+
+	{% if quest.quest_title == "Юбилей кафедры ИТГС" %}
+		<footer class="pass_footer"></footer>
+	{% else %}
+		<footer class="footer">
+			<div class="container">
+				<div class="main-navigation">
+					<div class="footer_logo">
+						<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+						<span>Городские квесты</span>
+					</div>
+					<nav class="footer_menu">
+						<ul>
+							<li><a href="{% url 'quests' %}">Квесты</a></li>
+							<li><a href="{% url 'news' %}">Новости</a></li>
+							<li><a href="{% url 'rules' %}">Правила</a></li>
+						</ul>
+					</nav>	
+					<div class="footer_authorization">
+						<ul>
+							<li>
+							{% if user.is_authenticated %}
+	       					{% else %}
+	       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+	       					{% endif %}
+	       					</li>
+						</ul>
+					</div>		
+				</div>
+			</div>		
+		</footer>
+	{% endif %}
+</body>
+</html>

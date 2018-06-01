@@ -1,0 +1,61 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Пройти квест</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<script type="text/javascript" src="https://vk.com/js/api/share.js?93" charset="windows-1251"></script>
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			<div class="quest_pass-last">
+				<h2 class="quest_pass-last_title">Поздравляем! Вы прошли квест &laquo;{{ quest.quest_title }}&raquo;</h2>
+				<div class="quest_last-cover_{{ quest.pk }}"></div>
+				<span class="quest_pass-last_text">Ваш результат: <b>{{ time }}</b>. Чтобы посмотреть полную статистику, <a href="{% url 'statistics' pk=quest.pk %}">перейдите по ссылке</a>.</span>
+				<div class="quest_last-share">
+					<script type="text/javascript">
+						document.write(VK.Share.button(false, {type: 'link', text: 'Опубликовать'})); 
+					</script>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

@@ -1,0 +1,261 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Главная страница</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href=""><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					{% if user.is_authenticated %}
+						<li><a href="{% url 'main_page' %}">Личный кабинет</a></li>
+					{% endif %}
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+
+		<div class="about">
+			<div class="about_picture"><h1 class="about_picture-title">Что такое городские квесты?</h1></div>
+			<div class="container">
+				<div class="about_text">
+					<p>В последнее время квесты &mdash; развлекательная игра для команды из нескольких человек, проходящая в специально подготовленном помещении &mdash; набрали популярность среди людей всех возрастов. Прохождение квеста помогает развивать логическое мышление, работу в команде, в некоторых случаях &mdash; также физическое состояние организма.</p>
+					<p>Но что если вам не хочется проводить время в душном помещении? Выйдите на улицу, <a href="{% url 'quests' %}">выберите городской квест</a>, находящийся поблизости, и гуляйте, параллельно узнавая больше об истории и культуре! Или <a href="{% url 'add_quest' %}">создайте свой собственный квест</a>, чтобы поделиться с остальными знаниями о любимом городе.</p>
+				</div>
+				<div class="about_links">
+					<a href="{% url 'quests' %}" class="about_list">Выбрать квест</a>
+					<a href="{% url 'add_quest' %}" class="about_make">Создать квест</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="popular">
+			<div class="popular_picture"><h1 class="popular_picture-title">Самые популярные маршруты</h1></div>
+			<div class="container">
+				<ul class="popular_list">
+					{% for quest in quests %}
+					<li>
+						<div class="popular_list-item">
+							<div class="popular_list-item_cover-{{quest.pk}}">
+								<ul class="popular_list-item_statistic">
+									<li>Команда: {{ quest.min_players }} - {{ quest.max_players }} человек</li>
+									<li>Сложность: {{ quest.complexity }}</li>
+									<li>{{ quest.quest_type }}</li>
+								</ul>
+								<h1 class="popular_list-item_title">{{ quest.quest_title }}</h1>
+							</div>
+							<p class="popular_list-item_description">{{ quest.quest_text }}</p>
+							<div class="popular_list-item_links">
+								<a href="{% url 'quest_detail' pk=quest.pk %}" class="popular_list-item_more">Подробнее</a>
+								{% if quest.quest_title == "Юбилей кафедры ИТГС" %}
+									<a href="{% url 'universary' %}" class="popular_list-item_enroll">Пройти квест</a>
+								{% else %}
+									<a href="{% url 'quest_pass_index' pk=quest.pk %}" class="popular_list-item_enroll">Пройти квест</a>
+								{% endif %}
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="map">
+			<div class="map_picture"><h1 class="map_picture-title">Карта квестов</h1></div>
+			<div class="container">
+				<div class="map_quests">
+				    <div id="map"></div>
+				    <script>
+				      function initMap() {
+				        let uluru = {lat: 59.9342802, lng: 30.3350986};
+
+				        let map = new google.maps.Map(document.getElementById('map'), {
+				          zoom: 13,
+				          center: uluru
+				        });
+
+				        let markerItems = [];
+
+				        let marker_positions = [ {lat: 59.9398317, lng: 30.3145597}, {lat: 59.9332424, lng: 30.3433831}, {lat: 59.9339050, lng: 30.3064850},  
+				        {lat: 59.9500019, lng: 30.3166718}, {lat: 59.945822, lng: 30.372918}, {lat: 59.944955, lng: 30.335283}, {lat: 59.926567, lng: 30.317354}, 
+				        {lat: 59.919684, lng: 30.327697}, {lat: 59.931167, lng: 30.360441} ];
+
+
+				        let markers = [ { position: marker_positions[0], type: "excursion", name: "Квест по крышам", complexity: "hard", complexity_display: "Тяжело" },
+				        				{ position: marker_positions[1], type: "excursion", name: "Прогулка по мостам", complexity: "easy", complexity_display: "Легко" },
+				        				{ position: marker_positions[2], type: "excursion", name: "Санкт-Петербург", complexity: "middle", complexity_display: "Нормально" },
+				        				{ position: marker_positions[3], type: "classic", name: "Крепости и замки", complexity: "middle", complexity_display: "Нормально" },
+				        				{ position: marker_positions[4], type: "classic", name: "Сады и парки", complexity: "easy", complexity_display: "Легко" },
+				        				{ position: marker_positions[5], type: "classic", name: "Аллеи Летнего сада", complexity: "hard", complexity_display: "Тяжело" },
+				        				{ position: marker_positions[6], type: "auto", name: "Проездом по центру", complexity: "easy", complexity_display: "Легко" },
+				        				{ position: marker_positions[7], type: "auto", name: "Вокзалы", complexity: "hard", complexity_display: "Тяжело" },
+				        				{ position: marker_positions[8], type: "auto", name: "По Невскому проспекту", complexity: "middle", complexity_display: "Нормально" }
+				        ];
+
+				        let infowindow = new google.maps.InfoWindow;
+
+				        markers.forEach(function(item) {
+							let icon = "";
+
+							if ( item.type === "classic" ) {
+								switch( item.complexity ) {
+									case "easy": icon = "../static/icons/" + "icon_c_s.png";
+										break;
+									case "middle": icon = "../static/icons/" + "icon_c_m.png";
+										break;
+									case "hard": icon = "../static/icons/" + "icon_c_d.png";
+										break;
+								}
+							}
+
+							if ( item.type === "excursion" ) {
+								switch( item.complexity ) {
+									case "easy": icon = "../static/icons/" + "icon_e_s.png";
+										break;
+									case "middle": icon =  "../static/icons/" + "icon_e_m.png";
+										break;
+									case "hard": icon =  "../static/icons/" + "icon_e_d.png";
+										break;
+								}
+							}
+
+							if ( item.type === "auto" ) {
+								switch( item.complexity ) {
+									case "easy": icon = "../static/icons/" + "icon_a_s.png";
+										break;
+									case "middle": icon = "../static/icons/" + "icon_a_m.png";
+										break;
+									case "hard": icon = "../static/icons/" + "icon_a_d.png";
+										break;
+								}
+							}
+
+							let marker_item = new google.maps.Marker({ 
+								map: map,
+								position: item.position,
+								name: item.name,
+								complexity: item.complexity_display,
+								icon: icon
+							}); 
+
+							markerItems.push(marker_item);
+
+							google.maps.event.addListener(marker_item, 'click', function() { 
+								infowindow.setContent('<p class="map_description-text">Название: '+ marker_item.name +'</p><hr><p class="map_description-text">Сложность: '+ marker_item.complexity +'</p>'); 
+
+								infowindow.open(map, marker_item); 
+							}); 
+						});
+
+				     	google.maps.event.addDomListener(window, 'load', initialize);
+				      }
+				    </script>
+					<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8FR4FcULuNZDxaC6zRloriDPCwEbggbg&callback=initMap">
+    				</script>
+					<div class="map_quests-symbols">
+					<div>
+						<h2 class="map_quests-symbols_title">Обозначения:</h2>
+						<ul>
+							<li><i class="fa fa-clock-o map_quests-symbols-item" aria-hidden="true"></i>Классический квест</li>
+							<li><i class="fa fa-university map_quests-symbols-item" aria-hidden="true"></i>Квест-экскурсия</li>
+							<li><i class="fa fa-car map_quests-symbols-item" aria-hidden="true"></i>Авто-квест</li>
+							<li class="map_quests-symbols_complexity"><i class="fa fa-circle easy map_quests-symbols-item" aria-hidden="true"></i>Легко</li>
+							<li class="map_quests-symbols_complexity"><i class="fa fa-circle normal map_quests-symbols-item" aria-hidden="true"></i>Нормально</li>
+							<li class="map_quests-symbols_complexity"><i class="fa fa-circle hard map_quests-symbols-item" aria-hidden="true"></i>Тяжело</li>
+						</ul>						
+					</div>
+						<a href="{% url 'quests' %}" class="map_quests-symbols_list">Все квесты >></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="reviews">
+			<div class="reviews_picture"><h1 class="reviews_picture-title">Последние отзывы</h1></div>
+			<div class="container">
+				<ul class="reviews_list">
+					{% for commoncomment in commoncomments %}
+						{% if commoncomment.common_comment_approved_comment %}
+						<li>
+							<div class="reviews_list-item">
+								<div class="reviews_list-item_photo-{{commoncomment.pk}}"></div>
+								<h2 class="reviews_list-item_author">{{ commoncomment.common_comment_author }}</h2>
+								{% if not commoncomment.common_comment_approved_comment %}
+                				<a class="reviews_list-item_symbol" title="Удалить комментарий" href="{% url 'commoncomment_remove' pk=commoncomment.pk %}"><i class="fa fa-times" aria-hidden="true"></i></a>
+                				<a class="reviews_list-item_symbol" title="Одобрить комментарий" href="{% url 'commoncomment_approve' pk=commoncomment.pk %}"><i class="fa fa-check" aria-hidden="true"></i></a>
+            					{% endif %}
+								<p class="reviews_list-item_text">{{ commoncomment.common_comment_text }}</p>
+								<p class="reviews_list-item_data">{{ commoncomment.common_comment_created_date }}</p>
+							</div>
+						</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+
+				<div class="review_link">
+					<a href="{% url 'add_comment' %}" class="reviews_give_feedback">Оставить отзыв</a>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="footer_logo">
+					<a href=""><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="footer_menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="footer_authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>		
+	</footer>
+</body>
+</html>

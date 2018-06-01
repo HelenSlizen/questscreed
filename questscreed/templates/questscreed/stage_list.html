@@ -1,0 +1,66 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Этапы квеста</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="container">
+			<div class="main_stages">
+				<h2 class="stages_title">Список этапов квеста &laquo;{{quest.quest_title}}&raquo;:</h2>
+				<ul class="stages_list">
+					{% for stage in quest.stages.all %}
+						<li>
+							<a href="{% url 'stage_edit' pk=stage.pk %}" class="stages_list-item"><i class="fa fa-pencil stages_list-item_symbol"></i>{{ stage.stage_title }}</a>
+							<div class="stages_list-item_border"></div>
+						</li>
+					{% endfor %}
+				</ul>
+				<div class="stages_links">
+					<a href="{% url 'stage_add' pk=quest.pk %}" class="stages_button"><i class="fa fa-plus stages_button-symbol" aria-hidden="true"></i>Добавить этап</a>
+					<a href="{% url 'quest_detail' pk=quest.pk %}" class="stages_button-back">Вернуться назад</a>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

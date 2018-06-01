@@ -1,0 +1,110 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Правила</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="rules_container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="" class="active">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="rules_container">
+			<div class="rules_main">
+				<h1 class="rules_title">Правила</h1>
+
+				<div class="rules_item">
+					<h2 class="rules_title-gamers">Для игроков и команд</h2>
+					<div class="rules_border"></div>
+					<div class="rules_gamers">
+						<p class="rules_gamers-text">В последнее время квесты &mdash; развлекательная игра для команды из нескольких человек, проходящая в специально подготовленном помещении &mdash; набрали популярность среди людей всех возрастов. Прохождение квеста помогает развивать логическое мышление, работу в команде, в некоторых случаях &mdash; также физическое состояние организма.</p>
+						<li class="rules_gamers-list">
+							<ul>1. Надевайте удобную обувь</ul>
+							<ul>2. Учитывайте максимальное количество участников квеста</ul>
+							<ul>3. Проверяйте написание ответа, чтобы не тратить лишний раз подсказки</ul>
+							<ul>4. Наслаждайтесь игрой: квесты созданы для развлечения, а не для тренировки хакерских способностей :)</ul>
+						</li>
+						<p class="rules_gamers-text">В последнее время квесты &mdash; развлекательная игра для команды из нескольких человек, проходящая в специально подготовленном помещении &mdash; набрали популярность среди людей всех возрастов. Прохождение квеста помогает развивать логическое мышление, работу в команде, в некоторых случаях &mdash; также физическое состояние организма.</p>
+					</div>
+				</div>
+
+				<div class="rules_item">
+					<h2 class="rules_title-admin">Для администраторов квестов</h2>
+					<div class="rules_border"></div>
+					<div class="rules_admin">
+						<p class="rules_admin-text">В последнее время квесты &mdash; развлекательная игра для команды из нескольких человек, проходящая в специально подготовленном помещении &mdash; набрали популярность среди людей всех возрастов. Прохождение квеста помогает развивать логическое мышление, работу в команде, в некоторых случаях &mdash; также физическое состояние организма.</p>
+						<li class="rules_admin-list">
+							<ul>1. Создавайте квесты на любой вкус, но учитывайте, что вопросы, рассчитанные на Нобелевских лауреатов, никто не оценит :)</ul>
+							<ul>2. Соизмеряйте количество этапов и время прохождения</ul>
+							<ul>3. Пешеходный квест-экскурсия в двадцать километров тоже мало кому понравится</ul>
+							<ul>4. Не используйте нецензурную лексику в вопросах или подсказках &mdash; кому-то это может быть неприятно</ul>
+						</li>
+						<p class="rules_gamers-text">В последнее время квесты &mdash; развлекательная игра для команды из нескольких человек, проходящая в специально подготовленном помещении &mdash; набрали популярность среди людей всех возрастов. Прохождение квеста помогает развивать логическое мышление, работу в команде, в некоторых случаях &mdash; также физическое состояние организма.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="footer_logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="footer_menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="footer_authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="registration_form.html">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>		
+	</footer>
+</body>
+</html>

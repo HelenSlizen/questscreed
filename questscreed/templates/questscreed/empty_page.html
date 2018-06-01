@@ -1,0 +1,86 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>404</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			<div class="empty_main">
+				<h1 class="empty_title">У-у-у-пс, что-то пошло не так. Такой страницы еще не существует :(</h1>
+				<h2 class="empty_text">Но вы всегда можете полюбоваться на котиков вместо того, чтобы проходить квесты и выходить из дома.</h2>
+				<div class="empty_images">
+					<img class="empty_image" src="http://127.0.0.1:8000/static/images/empty.jpg" alt="404">
+					<img class="empty_image" src="http://127.0.0.1:8000/static/images/empty_1.jpg" alt="404">
+					<img class="empty_image" src="http://127.0.0.1:8000/static/images/empty_2.jpg" alt="404">					
+				</div>
+				<h2 class="empty_text">Или вернуться <a href="{% url 'index' %}">на главную страницу</a></h2>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="footer_logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="footer_menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="footer_authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="registration_form.html">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>		
+	</footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Юбилей</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'quest_detail' pk=4 %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="container">
+			<div class="universary_main">
+				<h2 class="universary_main-title">Этапы прохождения:</h2>
+				<div class="universary_box">
+				{% if not universary.balloon %}
+					<a href="{% url 'universary_pass' stage_pk=1 %}"><img id="balloon" src="{% static 'icons/balloon.png' %}" alt="Шарик"></a>
+				{% else %}
+					<img id="balloon_active" src="{% static 'icons/balloon_active.png' %}" alt="Шарик">
+				{% endif %}
+				{% if not universary.text %}
+					<a href="{% url 'universary_pass' stage_pk=2 %}"><img id="text" src="{% static 'icons/text.png' %}" alt="Свиток"></a>
+				{% else %}
+					<img id="text_active" src="{% static 'icons/text_active.png' %}" alt="Свиток">
+				{% endif %}
+				{% if not universary.mask %}
+					<a href="{% url 'universary_pass' stage_pk=3 %}"><img id="mask" src="{% static 'icons/mask.png' %}" alt="Маски"></a>
+				{% else %}
+					<img id="mask_active" src="{% static 'icons/mask_active.png' %}" alt="Маски">
+				{% endif %}
+				{% if not universary.send %}
+					{% if universary.balloon and universary.text %}
+						<a href="{% url 'universary_pass' stage_pk=4 %}"><img id="send" src="{% static 'icons/send.png' %}" alt="Отправка"></a>
+					{% else %}
+						<img id="send_active" src="{% static 'icons/send_closed.png' %}" alt="Отправка">
+					{% endif %}
+				{% else %}
+					<img id="send_active" src="{% static 'icons/send_active.png' %}" alt="Отправка">
+				{% endif %}
+				{% if not universary.photo %}
+					{% if universary.balloon and universary.text and universary.mask %}
+						<a href="{% url 'universary_pass' stage_pk=5 %}"><img id="photo" src="{% static 'icons/photo.png' %}" alt="Фотоаппарат"></a>
+					{% else %}
+						<img id="photo_active" src="{% static 'icons/photo_closed.png' %}" alt="Фотоаппарат">
+					{% endif %}
+				{% else %}
+					<img id="photo_active" src="{% static 'icons/photo_active.png' %}" alt="Фотоаппарат">
+				{% endif %}
+				</div>
+				<span>После получения подтверждения от модератора обновите страницу</span>
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

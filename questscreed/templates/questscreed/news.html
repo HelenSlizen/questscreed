@@ -1,0 +1,108 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Новости</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="" class="active">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="container">
+			<div class="news_main">
+				<div class="news_header">
+					<h1 class="news_title">Последние новости</h1>
+					<a title="Добавить новость" href="{% url 'add_article' %}"><i class="fa fa-plus news_add-symbol" aria-hidden="true"></i></a>
+				</div>
+				{% for article in articles %}
+					<div class="news_item">
+						<h2 class="news_item-title">{{ article.article_title }}</h2>
+						<div class="news_item-border"></div>
+						<img src="../static/images/about_photo.jpg" alt="" class="news_item-image">
+						<p class="news_item-text">{{ article.article_description }}<a href="{% url 'news_detail' pk=article.pk %}" class="news_item-link"> Подробнее >></a></p>
+						<p class="news_item-data">{{ article.article_published_date }}</p>
+					</div>
+				{% endfor %}
+
+				<div class="pagination">
+					<span class="news_pagination">
+				        {% if articles.has_previous %}
+	                        <a href="?page={{ articles.previous_page_number }}" class="pagination-prev" title="Предыдущая страница"><</a>
+	                    {% endif %}
+
+	                    <span class="current">
+	                        Страница <span class="pagination-current">{{ articles.number }}</span> из {{ articles.paginator.num_pages }}
+	                    </span>
+
+	                    {% if articles.has_next %}
+	                        <a href="?page={{ articles.next_page_number }}" class="pagination-next" title="Следующая страница">></a>
+	                    {% endif %}
+	                </span>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="footer_logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="footer_menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="footer_authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>		
+	</footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Войти</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="{% url 'quests' %}">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main class="main">
+		<div class="container">
+			<div class="review_main">
+				<h1 class="review_title">Войти</h1>
+    			<form method="POST" class="login_form" action="{% url 'login' %}">
+			    	{% csrf_token %}
+
+			    	{% if form.errors %}
+			    		<p>Логин или пароль неверен</p>
+			    	{% endif %}
+
+			        <p>
+				        {{ form.username.label_tag }}
+						{{ form.username }}
+			        </p>
+			        <p>
+						{{ form.password.label_tag }}
+			            {{ form.password }}
+			        </p>
+
+					<input id="login_form-button" type="submit" value="Войти" />
+					<input type="hidden" name="next" value="{{ next }}" />
+				</form>
+				<span class="login_text">Нет аккаунта на сайте? <a href="{% url 'register' %}" class="login_link">Зарегистрируйтесь!</a></span>
+			</div>
+		</div>
+	</main>
+
+	<footer class="pass_footer"></footer>
+</body>
+</html>

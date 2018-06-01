@@ -1,0 +1,144 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Квесты</title>
+	<link href="https://fonts.googleapis.com/css?family=Spectral+SC:400,400i,700,700i&amp;subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'fonts/css/font-awesome.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="menu">
+					<ul>
+						<li><a href="" class="active">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+					 		<span class="user">Привет, {{ user.username }}! <small>(<a href="{% url 'logout' %}">Выйти</a>)</small></span>
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="quests">
+			<div class="container">
+				<div class="quests_header">
+					<h1 class="quests_title">Список квестов:</h1>
+					<div class="quest_sort-cover">
+					<script>
+						function show(id) {
+
+						    var ul = document.getElementById(id)
+
+						    if (ul.style.display == 'block') 
+						        ul.style.display = 'none'
+						    else 
+						        ul.style.display = 'block'
+						}
+					</script>
+						<span class="quests_sort">Сортировать<i id="quests_sort-symbol" onclick="show('quest_sort-select')" class="fa fa-sort-down quests_sort-symbol"></i></span>
+						<ul id='quest_sort-select' class="quest_sort-select">
+							<li><a href="{% url 'quests' %}">Сначала новые</a></li>
+							<li><a href="{% url 'quests_reverse' %}">Сначала старые</a></li>
+							<li><a href="{% url 'quests_popular' %}">По популярности</a></li>
+						</ul>
+					</div>
+				</div>
+				<ul class="popular_list">
+					{% for quest in quests %}
+					<li>
+						<div class="popular_list-item">
+							<div class="popular_list-item_cover-{{quest.pk}}">
+								<ul class="popular_list-item_statistic">
+								{% if not quest.quest_title == "Юбилей кафедры ИТГС" %}
+									<li>Команда: {{ quest.min_players }} - {{ quest.max_players }} человек</li>
+									<li>Сложность: {{ quest.complexity }}</li>
+									<li>{{ quest.quest_type }}</li>
+								{% endif %}
+								</ul>
+								<h1 class="popular_list-item_title">{{ quest.quest_title }}</h1>
+							</div>
+							<p class="popular_list-item_description">{{ quest.quest_text }}</p>
+							<div class="popular_list-item_links">
+								<a href="{% url 'quest_detail' pk=quest.pk %}" class="popular_list-item_more">Подробнее</a>
+								{% if quest.quest_title == "Юбилей кафедры ИТГС" %}
+									<a href="{% url 'universary' %}" class="popular_list-item_enroll">Пройти квест</a>
+								{% else %}
+									<a href="{% url 'quest_pass_index' pk=quest.pk %}" class="popular_list-item_enroll">Пройти квест</a>
+								{% endif %}
+							</div>
+						</div>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<div class="pagination">
+				<span class="news_pagination">
+			        {% if quests.has_previous %}
+                        <a href="?page={{ quests.previous_page_number }}" class="pagination-prev" title="Предыдущая страница"><</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Страница <span class="pagination-current">{{ quests.number }}</span> из {{ quests.paginator.num_pages }}
+                    </span>
+
+                    {% if quests.has_next %}
+                        <a href="?page={{ quests.next_page_number }}" class="pagination-next" title="Следующая страница">></a>
+                    {% endif %}
+                </span>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="main-navigation">
+				<div class="footer_logo">
+					<a href="{% url 'index' %}"><strong>Quest's creed</strong></a>
+					<span>Городские квесты</span>
+				</div>
+				<nav class="footer_menu">
+					<ul>
+						<li><a href="">Квесты</a></li>
+						<li><a href="{% url 'news' %}">Новости</a></li>
+						<li><a href="{% url 'rules' %}">Правила</a></li>
+					</ul>
+				</nav>	
+				<div class="footer_authorization">
+					<ul>
+						<li>
+						{% if user.is_authenticated %}
+       					{% else %}
+       						<a href="{% url 'login' %}">Войти</a>/<a href="{% url 'register' %}">Регистрация</a>
+       					{% endif %}
+       					</li>
+					</ul>
+				</div>		
+			</div>
+		</div>		
+	</footer>
+</body>
+</html>
